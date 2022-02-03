@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "akari"
+version = "0.0.1"
+description = ""
+authors = ["yupix <yupi0982@outlook.jp>"]
+license = "MIT LICENSE"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+loguru = "^0.6.0"
+pydantic = "^1.9.0"
+"mi.py" = {git = "https://github.com/yupix/Mi.py.git", rev = "feature/v3.9.9"}
+
+[tool.poetry.dev-dependencies]
+prospector = "^1.6.0"
+autopep8 = "^1.6.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
