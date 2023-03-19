@@ -1,20 +1,23 @@
 [tool.poetry]
 name = "akari"
-version = "0.0.1"
+version = "0.1.0"
 description = ""
 authors = ["yupix <yupi0982@outlook.jp>"]
-license = "MIT LICENSE"
+license = "MIT"
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
+mipa = "^0.1.2"
 loguru = "^0.6.0"
-pydantic = "^1.9.0"
-"mi.py" = {git = "https://github.com/yupix/Mi.py.git", rev = "feature/v3.9.9"}
+async-lru = "^2.0.2"
+sqlalchemy = "^2.0.7"
+alembic = "^1.10.2"
 
-[tool.poetry.dev-dependencies]
-prospector = "^1.6.0"
-autopep8 = "^1.6.0"
+
+[tool.poetry.group.dev.dependencies]
+axblack = "^20220330"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

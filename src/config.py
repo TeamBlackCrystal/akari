@@ -26,3 +26,4 @@ class AkariConfig:
 
         self.token: str = config['BOT']['token']
         self.url: str = config['BOT']['url']
+        self.owner_id: str = config['BOT']['owner_id']
