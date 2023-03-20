@@ -8,11 +8,13 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-mipa = "^0.1.2"
+mipa = "0.2.0"
 loguru = "^0.6.0"
 async-lru = "^2.0.2"
-sqlalchemy = "^2.0.7"
 alembic = "^1.10.2"
+aiosqlite = "^0.18.0"
+sqlalchemy = {extras = ["asyncio"], version = "^2.0.7"}
+injector = "^0.20.1"
 
 
 [tool.poetry.group.dev.dependencies]
