@@ -9,9 +9,19 @@ if TYPE_CHECKING:
 
 
 class IFReminderRepository(ABC):
+    @abstractmethod
+    async def get_by_note_id(self, note_id: str) -> Reminder | None:
+        ...
+
+    @abstractmethod
+    async def delete(self, note_id: str) -> None:
+        ...
+
+    @abstractmethod
     async def get_not_done_lists(self) -> list[Reminder]:
         ...
 
+    @abstractmethod
     async def get_lists(self, user_id: str) -> list[Reminder]:
         ...
 

@@ -12,9 +12,11 @@ for ng_word_file in NG_WORD_FILES:
     with open(f'./assets/ng_words/{ng_word_file}', mode='r', encoding='utf-8') as f:
         NG_WORDS.extend([i for i in f.read().split('\n') if len(i) > 0])
 
+
 class IHitNGWord(TypedDict):
     hits: list[str]
     total: int
+
 
 class NGWordDetecter:
     def __init__(self, text: str) -> None:

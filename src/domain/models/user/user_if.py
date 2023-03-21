@@ -10,9 +10,9 @@ if TYPE_CHECKING:
 
 class IFUserRepository(ABC):
     @abstractmethod
-    async def find_by_misskey_user_id(self, misskey_user_id: str) -> User | None:
+    async def find_by_user_id(self, user_id: str) -> User | None:
         ...
 
     @abstractmethod
-    async def create(self, misskey_user_id: str) -> User:
+    async def create(self, user_id: str) -> User:
         ...

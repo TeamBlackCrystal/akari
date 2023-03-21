@@ -41,7 +41,7 @@ class Akari(Bot):
 
     async def on_note(self, note: Note):
         logger.info(f'{get_name(note.author)}: {note.content}')
-        # user_repository = injector.get(IUserCreateRepository)
+        # user_repository = injector.get(IFUserRepository)
         # await user_repository.create(note.author.id)
         # async with session() as _session:
         #     searchUserRes = await _session.execute(select(User).where(User.misskey_id == note.author.id))
