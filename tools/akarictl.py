@@ -87,7 +87,7 @@ class Generater:
         input_data = self.generate_input_data(path)
 
         use_case_class_name = USE_CASE_CLASS_NAME_TEMPLATE.format(
-            self.name.capitalize()
+            f'{self.name.capitalize()}{self.method.capitalize()}'
         )
         usecase_template = USE_CASE_TEMPLATE.format(
             input_data['import_path'], input_data['class_name'], use_case_class_name
@@ -110,7 +110,7 @@ class Generater:
         domain = self.generate_domain()
         usecase = self.generate_usecase(create_path)
 
-        interactor_class_name = INTERACTOR_CLASS_NAME.format(self.name.capitalize())
+        interactor_class_name = INTERACTOR_CLASS_NAME.format(f'{self.name.capitalize()}{self.method.capitalize()}')
 
         interactor_template = INTERACTOR_TEMPLATE.format(
             domain['import_path'], # TODO 無罪
