@@ -4,6 +4,8 @@ from src.domain.models.reminder.reminder_repository import ReminderRepository
 from src.interactor.reminder.create_reminder import CreateReminderInteractor
 from src.interactor.reminder.get_lists.reminder_get_lists import ReminderGetListsInteractor
 from src.interactor.reminder.get_lists.reminder_get_lists_use_case import IFReminderGetListsUseCase
+from src.interactor.reminder.get_not_done_lists.reminder_get_not_done_lists import ReminderGetnotdonelistsInteractor
+from src.interactor.reminder.get_not_done_lists.reminder_get_not_done_lists_use_case import IFReminderGetnotdonelistsUseCase
 
 from src.interactor.reminder.reminder_create_use_case import IFReminderCreateUseCase
 
@@ -13,3 +15,4 @@ class ReminderModule(Module):
         binder.bind(IFReminderRepository, ReminderRepository)
         binder.bind(IFReminderCreateUseCase, CreateReminderInteractor)
         binder.bind(IFReminderGetListsUseCase, ReminderGetListsInteractor)
+        binder.bind(IFReminderGetnotdonelistsUseCase, ReminderGetnotdonelistsInteractor)

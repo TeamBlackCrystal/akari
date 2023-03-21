@@ -18,5 +18,5 @@ class IFReminderGetListsUseCase(IFUseCase):
         pass
 
     @abstractmethod
-    async def handle(self, input_data: IReminderGetListsInputData) -> Reminder:
+    async def handle(self, input_data: IReminderGetListsInputData) -> list[Reminder]:
         pass
