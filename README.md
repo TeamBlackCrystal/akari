@@ -24,6 +24,8 @@ pip install -r requirements.txt
 
 # example-config.iniをconfig.iniに改名してtokenとurlを打つ
 
+# DBのマイグレーションを行う
+alembic upgrade +1
 
 # Botを実行
 python main.py
