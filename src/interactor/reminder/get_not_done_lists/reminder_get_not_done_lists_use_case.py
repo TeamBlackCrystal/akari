@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from src.domain.models.shared.user import Reminder
 
 
-
 class IFReminderGetnotdonelistsUseCase(IFUseCase):
     @abstractmethod
     def __init__(self, repository) -> None:

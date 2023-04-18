@@ -12,7 +12,11 @@ from mipac import (
 from src.config import config
 from src.utils.common import get_name
 
-INITIAL_EXTENSIONS = ['src.cogs.follow', 'src.cogs.reminder']
+INITIAL_EXTENSIONS = [
+    {'path': 'src.cogs.follow', 'is_enable': True},
+    {'path': 'src.cogs.reminder', 'is_enable': True},
+    {'path': 'src.cogs.notfound_fixer', 'is_enable': config.features.notfound_fixer},
+]
 
 
 async def follow_user(user: LiteUser, client: ClientManager):
@@ -33,7 +37,7 @@ class Akari(Bot):
 
     async def setup_hook(self) -> None:
         for cog in INITIAL_EXTENSIONS:
-            await self.load_extension(cog)
+            await self.load_extension(cog['path'])
 
     async def on_ready(self, ws):
         logger.success(f'Connected {get_name(self.user)}')
@@ -49,7 +53,7 @@ class Akari(Bot):
         #     if hitUser is None:
         #         hitUser = await _session.execute(insert(User).values(misskey_id=note.author.id))
         #         await _session.commit()
-            
+
         #     print(hitUser)
 
         #     if note.content:
@@ -89,7 +93,7 @@ class Akari(Bot):
         #                 )
         #                 case 3:
         #                     logger.info(f'{note.author.username}が3ストライクです')
-        #                 case _: 
+        #                 case _:
         #                     text = f'{note_author_mention} **警告** 不適切な発言が確認されたため、ノートを削除しました'
         #                     await send_owner(text)
 
@@ -106,6 +110,5 @@ class Akari(Bot):
 
 if __name__ == '__main__':
     bot = Akari()
-
 
     asyncio.run(bot.start(config.url, config.token))

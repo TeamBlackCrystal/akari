@@ -4,7 +4,9 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 from src.interface.usecase_if import IFUseCase
-from src.interactor.reminder.get_by_note_id.reminder_get_by_note_id_input_if import IFReminderGetbynoteidInputData
+from src.interactor.reminder.get_by_note_id.reminder_get_by_note_id_input_if import (
+    IFReminderGetbynoteidInputData,
+)
 
 if TYPE_CHECKING:
     from src.domain.models.shared.user import Reminder

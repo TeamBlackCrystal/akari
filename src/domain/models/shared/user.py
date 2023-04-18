@@ -13,9 +13,8 @@ class User(Base):
     misskey_id: Mapped[str] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow())
 
-    strikes: Mapped[list["Strike"]] = relationship(back_populates='user')
-    reminders: Mapped[list["Reminder"]] = relationship(back_populates='user')
-
+    strikes: Mapped[list['Strike']] = relationship(back_populates='user')
+    reminders: Mapped[list['Reminder']] = relationship(back_populates='user')
 
 
 class Strike(Base):
@@ -33,8 +32,8 @@ class Reminder(Base):
 
     id: Mapped[str] = mapped_column(default=str(uuid.uuid4()), primary_key=True)
 
-    user_id: Mapped[str] = mapped_column(ForeignKey("users.misskey_id"))
-    user: Mapped["User"] = relationship(back_populates="reminders")
+    user_id: Mapped[str] = mapped_column(ForeignKey('users.misskey_id'))
+    user: Mapped['User'] = relationship(back_populates='reminders')
 
     title: Mapped[str] = mapped_column()
     note_id: Mapped[str] = mapped_column(unique=True)

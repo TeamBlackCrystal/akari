@@ -5,7 +5,14 @@ AkariのConfigモデル
 
 import configparser
 import json
-from src.types.config import Config
+
+
+from src.types.config import Config, FeaturesSection
+
+
+class AkariFeaturesConfig:
+    def __init__(self, features_config: FeaturesSection) -> None:
+        self.notfound_fixer: bool = features_config['notfound_fixer'].lower() == 'true'
 
 
 class AkariConfig:
@@ -29,6 +36,7 @@ class AkariConfig:
         self.token: str = config['BOT']['token']
         self.url: str = config['BOT']['url']
         self.owner_ids: list[str] = json.loads(config['BOT']['owner_ids'])
+        self.features: AkariFeaturesConfig = AkariFeaturesConfig(config['Features'])
 
 
 config_parser = configparser.ConfigParser()

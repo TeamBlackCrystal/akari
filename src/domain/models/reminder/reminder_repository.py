@@ -10,7 +10,9 @@ class ReminderRepository(IFReminderRepository):
         async with Session() as session:
             async with session.begin():
                 search_reminder = await session.execute(
-                    select(Reminder).where(Reminder.note_id == note_id).options(joinedload(Reminder.user))
+                    select(Reminder)
+                    .where(Reminder.note_id == note_id)
+                    .options(joinedload(Reminder.user))
                 )
         return search_reminder.scalar_one_or_none()
 

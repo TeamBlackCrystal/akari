@@ -1,8 +1,9 @@
-
 from injector import inject
 
 from src.domain.models.reminder.reminder_if import IFReminderRepository
-from src.interactor.reminder.get_not_done_lists.reminder_get_not_done_lists_use_case import IFReminderGetnotdonelistsUseCase
+from src.interactor.reminder.get_not_done_lists.reminder_get_not_done_lists_use_case import (
+    IFReminderGetnotdonelistsUseCase,
+)
 
 
 class ReminderGetnotdonelistsInteractor(IFReminderGetnotdonelistsUseCase):

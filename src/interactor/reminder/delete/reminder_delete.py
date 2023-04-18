@@ -1,9 +1,12 @@
-
 from injector import inject
 
 from src.domain.models.reminder.reminder_if import IFReminderRepository
-from src.interactor.reminder.delete.reminder_delete_input_if import IFReminderDeleteInputData
-from src.interactor.reminder.delete.reminder_delete_use_case import IFReminderDeleteUseCase
+from src.interactor.reminder.delete.reminder_delete_input_if import (
+    IFReminderDeleteInputData,
+)
+from src.interactor.reminder.delete.reminder_delete_use_case import (
+    IFReminderDeleteUseCase,
+)
 
 
 class ReminderDeleteInteractor(IFReminderDeleteUseCase):

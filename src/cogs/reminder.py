@@ -126,15 +126,14 @@ class ReminderCog(commands.Cog):
 
         if len(reminders) > 0:
             tasks_text = '\n'.join(
-                    [
-                        f'・[{reminder.title}]({config.url}/notes/{reminder.note_id})'
-                        for reminder in reminders
-                    ]
-                )
+                [
+                    f'・[{reminder.title}]({config.url}/notes/{reminder.note_id})'
+                    for reminder in reminders
+                ]
+            )
             print(tasks_text)
             await enhanced_reply(
-                ctx.message,
-                f'{get_name(ctx.author)}さんの{arg}です！\n{tasks_text}',
+                ctx.message, f'{get_name(ctx.author)}さんの{arg}です！\n{tasks_text}',
             )
         else:
             await enhanced_reply(ctx.message, '何も無いようですよ')
@@ -164,4 +163,3 @@ async def setup(bot: Bot):
     await bot.add_cog(
         injector.create_object(ReminderCog, additional_kwargs={'bot': bot})
     )
-

@@ -4,7 +4,9 @@ from src.domain.models.reminder.reminder_if import IFReminderRepository
 from src.interactor.reminder.get_lists.reminder_get_lists_input import (
     IReminderGetListsInputData,
 )
-from src.interactor.reminder.get_lists.reminder_get_lists_use_case import IFReminderGetListsUseCase
+from src.interactor.reminder.get_lists.reminder_get_lists_use_case import (
+    IFReminderGetListsUseCase,
+)
 
 
 class ReminderGetListsInteractor(IFReminderGetListsUseCase):
