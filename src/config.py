@@ -4,6 +4,7 @@ AkariのConfigモデル
 
 
 import configparser
+import json
 from src.types.config import Config
 
 
@@ -27,7 +28,7 @@ class AkariConfig:
 
         self.token: str = config['BOT']['token']
         self.url: str = config['BOT']['url']
-        self.owner_id: str = config['BOT']['owner_id']
+        self.owner_ids: list[str] = json.loads(config['BOT']['owner_ids'])
 
 
 config_parser = configparser.ConfigParser()
