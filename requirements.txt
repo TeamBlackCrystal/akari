@@ -1,0 +1,9 @@
+loguru
+async-lru
+alembic
+aiosqlite
+sqlalchemy
+injector
+flower
+mipa
+mipac
