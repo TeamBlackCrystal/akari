@@ -2,7 +2,7 @@ loguru
 async-lru
 alembic
 aiosqlite
-sqlalchemy
+sqlalchemy[asyncio]
 injector
 flower
 mipa
