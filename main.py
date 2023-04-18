@@ -37,7 +37,8 @@ class Akari(Bot):
 
     async def setup_hook(self) -> None:
         for cog in INITIAL_EXTENSIONS:
-            await self.load_extension(cog['path'])
+            if cog['is_enable']:
+                await self.load_extension(cog['path'])
 
     async def on_ready(self, ws):
         logger.success(f'Connected {get_name(self.user)}')
