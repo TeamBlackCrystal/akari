@@ -36,7 +36,7 @@ class AkariConfig:
         self.token: str = config['BOT']['token']
         self.url: str = config['BOT']['url']
         self.owner_ids: list[str] = json.loads(config['BOT']['owner_ids'])
-        self.features: AkariFeaturesConfig = AkariFeaturesConfig(config['Features'])
+        self.features: AkariFeaturesConfig = AkariFeaturesConfig(config['FEATURES'])
 
 
 config_parser = configparser.ConfigParser()

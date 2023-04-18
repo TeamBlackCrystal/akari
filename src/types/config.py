@@ -13,4 +13,4 @@ class FeaturesSection(TypedDict):
 
 class Config(TypedDict):
     BOT: BotSection
-    Features: FeaturesSection
+    FEATURES: FeaturesSection
