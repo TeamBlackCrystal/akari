@@ -22,6 +22,9 @@ python -m venv .venv
 # 依存関係をインストール
 pip install -r requirements.txt
 
+# example-config.iniをconfig.iniに改名してtokenとurlを打つ
+
+
 # Botを実行
 python main.py
 ```
