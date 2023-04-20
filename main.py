@@ -8,9 +8,12 @@ from mipac import (
     ClientManager,
     NotificationFollow,
 )
+from uvicorn import Config, Server
 
 from src.config import config
 from src.utils.common import get_name
+from src.web import create_fastapi_app
+from src.injector.di import injector
 
 INITIAL_EXTENSIONS = [
     {'path': 'src.cogs.follow', 'is_enable': True},
@@ -108,8 +111,17 @@ class Akari(Bot):
         logger.info(f'{get_name(follow.user)}さんからフォローされました')
         await follow_user(follow.user, self.client)
 
+async def start_fastapi():
+    await Server(Config(app=create_fastapi_app(injector), host='0.0.0.0')).serve()
+async def start_bot():
+    bot = Akari()
+    await bot.start(config.url, config.token)
+
+async def main():
+    fastapi_task = asyncio.create_task(start_fastapi())
+    bot_task = asyncio.create_task(start_bot())
+    await asyncio.gather(fastapi_task, bot_task)
 
 if __name__ == '__main__':
-    bot = Akari()
-
-    asyncio.run(bot.start(config.url, config.token))
+    asyncio.run(main())
+    
