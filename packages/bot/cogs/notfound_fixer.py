@@ -6,7 +6,7 @@ from mipac.models.note import Note
 from packages.shared.adapters.redis import RedisQueueSystem
 from packages.shared.interactor.notfound_fixed.find_by_user_id.notfound_fixed_find_by_user_id_use_case import IFNotfoundFixedFindByUserIdUseCase
 
-from src.queue import QueueSystem
+from packages.shared.queue import QueueSystem
 from packages.shared.tasks.notfound_fixer import use_complete_fix_notfound_image, use_fix_notfound_image
 
 from packages.shared.injector.di import injector

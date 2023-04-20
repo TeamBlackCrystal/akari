@@ -1,7 +1,7 @@
 from sqlalchemy import select
 from packages.shared.domain.models.user.user_if import IFUserRepository
 from packages.shared.domain.models.shared.user import User
-from src.db import Session
+from packages.shared.db import Session
 
 
 class UserRepository(IFUserRepository):

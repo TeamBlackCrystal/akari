@@ -13,9 +13,9 @@ from packages.shared.config import config
 from packages.shared.utils.common import get_name
 
 INITIAL_EXTENSIONS = [
-    {'path': 'src.cogs.follow', 'is_enable': True},
-    {'path': 'src.cogs.reminder', 'is_enable': True},
-    {'path': 'src.cogs.notfound_fixer', 'is_enable': config.features.notfound_fixer},
+    {'path': 'packages.bot.cogs.follow', 'is_enable': True},
+    {'path': 'packages.bot.cogs.reminder', 'is_enable': True},
+    {'path': 'packages.bot.cogs.notfound_fixer', 'is_enable': config.features.notfound_fixer},
 ]
 
 

@@ -28,7 +28,7 @@ from packages.shared.interactor.user.get_by_user_id.user_get_by_user_id_use_case
     IFUserGetbyuseridUseCase,
 )
 
-from src.config import config
+from packages.shared.config import config
 
 
 async def enhanced_reply(note: Note, msg):

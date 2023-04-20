@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 from sqlalchemy import select
 
-from src.db import Session
+from packages.shared.db import Session
 from packages.shared.domain.models.notfound_fixed.notfound_fixed import NotFoundFixed
 from packages.shared.domain.models.notfound_fixed.notfound_fixed_if import IFNotfoundFixedRepository
 

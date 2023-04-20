@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.queues.notfound_fixer import readonly_notfound_fixer_queue
+from packages.shared.queues.notfound_fixer import readonly_notfound_fixer_queue
 
 router = APIRouter(prefix='/jobs')
 

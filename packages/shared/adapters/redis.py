@@ -1,6 +1,6 @@
 import json
-from src.queue import JOB_PRIORITIES, GetJobsResult, IFQueueStorageAdapter, JobPriority, QueueStatus, generate_queue_key
-from src.redis import redis_connection
+from packages.shared.queue import JOB_PRIORITIES, GetJobsResult, IFQueueStorageAdapter, JobPriority, QueueStatus, generate_queue_key
+from packages.shared.redis import redis_connection
 from packages.shared.utils.common import batcher
 
 

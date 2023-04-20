@@ -2,7 +2,7 @@ from sqlalchemy import select, delete
 from sqlalchemy.orm import joinedload
 from packages.shared.domain.models.shared.user import Reminder
 from packages.shared.domain.models.reminder.reminder_if import IFReminderRepository
-from src.db import Session
+from packages.shared.db import Session
 
 
 class ReminderRepository(IFReminderRepository):
