@@ -111,17 +111,15 @@ class Akari(Bot):
         logger.info(f'{get_name(follow.user)}さんからフォローされました')
         await follow_user(follow.user, self.client)
 
-async def start_fastapi():
-    await Server(Config(app=create_fastapi_app(injector), host='0.0.0.0')).serve()
-async def start_bot():
+# async def start_fastapi():
+    # await Server(Config(app=create_fastapi_app(injector), host='0.0.0.0', port=3200)).serve()
+
+
+async def main():
     bot = Akari()
     await bot.start(config.url, config.token)
 
-async def main():
-    fastapi_task = asyncio.create_task(start_fastapi())
-    bot_task = asyncio.create_task(start_bot())
-    await asyncio.gather(fastapi_task, bot_task)
-
 if __name__ == '__main__':
+    
     asyncio.run(main())
     
