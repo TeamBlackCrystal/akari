@@ -12,7 +12,7 @@ from templates import (
     USE_CASE_CLASS_NAME_TEMPLATE,
     USE_CASE_TEMPLATE,
 )
-from mipac.util import str_lower
+from mipac.utils.format import str_lower
 
 # from templates import TEMPLATES
 
