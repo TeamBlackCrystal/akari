@@ -23,7 +23,7 @@ USE_CASE_TEMPLATE = """from __future__ import annotations
 
 from abc import abstractmethod
 
-from src.interface.usecase_if import IFUseCase
+from packages.shared.interface.usecase_if import IFUseCase
 from {0} import {1}
 
 

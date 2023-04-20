@@ -6,9 +6,9 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
-from src.domain.models.notfound_fixed.notfound_fixed import NotFoundFixed
+from packages.shared.domain.models.notfound_fixed.notfound_fixed import NotFoundFixed
 
-from src.domain.models.shared.user import Reminder, User, Strike
+from packages.shared.domain.models.shared.user import Reminder, User, Strike
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

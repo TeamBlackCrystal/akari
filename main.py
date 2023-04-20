@@ -8,12 +8,9 @@ from mipac import (
     ClientManager,
     NotificationFollow,
 )
-from uvicorn import Config, Server
 
-from src.config import config
-from src.utils.common import get_name
-from src.web import create_fastapi_app
-from src.injector.di import injector
+from packages.shared.config import config
+from packages.shared.utils.common import get_name
 
 INITIAL_EXTENSIONS = [
     {'path': 'src.cogs.follow', 'is_enable': True},
