@@ -7,12 +7,17 @@ import configparser
 import json
 
 
-from src.types.config import Config, FeaturesSection
+from src.types.config import Config, FeaturesSection, JobQueueSection
 
 
 class AkariFeaturesConfig:
     def __init__(self, features_config: FeaturesSection) -> None:
         self.notfound_fixer: bool = features_config['notfound_fixer'].lower() == 'true'
+
+class AkariJobQueueConfig:
+    def __init__(self, job_queue_config: JobQueueSection) -> None:
+        self.redis_url: str = job_queue_config['redis_url']
+
 
 
 class AkariConfig:
@@ -37,6 +42,7 @@ class AkariConfig:
         self.url: str = config['BOT']['url']
         self.owner_ids: list[str] = json.loads(config['BOT']['owner_ids'])
         self.features: AkariFeaturesConfig = AkariFeaturesConfig(config['FEATURES'])
+        self.job_queue: AkariJobQueueConfig = AkariJobQueueConfig(config['JOB_QUEUE'])
 
 
 config_parser = configparser.ConfigParser()
