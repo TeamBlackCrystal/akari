@@ -4,9 +4,11 @@ import uuid
 from typing import Any, Callable, Generic, Literal, TypeVar, TypedDict
 
 QueueStatus = Literal['waiting', 'running', 'completed']
+JobPriority = Literal[0, 1, 2, 3, 4,5,6,7,8,9]
+JOB_PRIORITIES: list[int] = [0, 1, 2, 3, 4,5,6,7,8,9]
 
-def generate_queue_key(name: str, status: QueueStatus = 'waiting'):
-    return f'{status}:{name}:{uuid.uuid4()}'
+def generate_queue_key(name: str, status: QueueStatus = 'waiting', priority: int=9):
+    return f'{priority}:{status}:{name}:{uuid.uuid4()}'
 
 class GetJobsResult(TypedDict):
     key: str
@@ -16,7 +18,7 @@ class GetJobsResult(TypedDict):
 
 class IFQueueStorageAdapter(ABC):
     @abstractmethod
-    async def add_job(self, key: str, *args, **kwargs):
+    async def add_job(self, key: str, priority: JobPriority=9, *args, **kwargs):
         ...
 
     @abstractmethod
@@ -30,7 +32,7 @@ class IFQueueStorageAdapter(ABC):
         ...
         
     @abstractmethod
-    async def update_status(self, key:str, name:str, status: QueueStatus)  -> str:
+    async def update_status(self, key:str, name:str, status: QueueStatus, priority: JobPriority|None=None)  -> str:
         """ジョブのステータスを更新します
 
         Parameters
@@ -79,6 +81,7 @@ class QueueSystem:
         *,
         queue_storage_adapter: IFQueueStorageAdapter,
     ) -> None:
+        self.is_startup:bool = True
         self.name = name
         self.func = func
         self.success_func = success_func
@@ -87,11 +90,12 @@ class QueueSystem:
         self.cooldown = cooldown
         self.next_stop = False
         self.queue_storage_adapter: IFQueueStorageAdapter = queue_storage_adapter
+        self.loop = asyncio.get_event_loop()
 
     def run(self) -> asyncio.Task[None]:
         if self.func is None or self.success_func is None:
             raise Exception('func 又は success_funcが定義されていません')
-        task = asyncio.create_task(self.scheduler())
+        task = self.loop.create_task(self.scheduler())
         return task
 
     def stop(self) -> None:
@@ -102,10 +106,10 @@ class QueueSystem:
     async def count_jobs(self, status: QueueStatus='waiting'):
         return await self.queue_storage_adapter.count_jobs(name=self.name, status=status)
 
-    async def add_queue(self, *args, **kwargs):
+    async def add(self, priority: JobPriority=9, *args, **kwargs):
         # キーは 状態:キューの名前:uuid で構成される
         await self.queue_storage_adapter.add_job(
-            generate_queue_key(self.name), *args, **kwargs
+            generate_queue_key(self.name, status='waiting', priority=priority), *args, **kwargs
         )
 
     async def get_queues(self, status: QueueStatus):
@@ -120,7 +124,11 @@ class QueueSystem:
             if self.next_stop:
                 return
             if self.current_run_process_number < self.max_process:
-                jobs = await self.get_queues('waiting')
+                if self.is_startup:
+                    jobs = await self.get_queues('running')
+                    self.is_startup = False
+                else:
+                    jobs = await self.get_queues('waiting')
                 for job in jobs:
                     if (
                         self.current_run_process_number < self.max_process
@@ -130,7 +138,7 @@ class QueueSystem:
                             self.current_run_process_number + 1
                         )
 
-                        asyncio.create_task(
+                        self.loop.create_task(
                             self.task(job['key'], *job['args'], **job['kwargs'])
                         )
 
