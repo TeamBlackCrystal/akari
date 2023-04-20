@@ -4,6 +4,11 @@ alembic
 aiosqlite
 sqlalchemy[asyncio]
 injector
-flower
-mipa
+git+https://github.com/yupix/MiPA.git@develop
+git+https://github.com/yupix/MiPAC.git@develop
 mipac
+redis
+fastapi
+uvicorn
+jinja2
+fastapi-injector
