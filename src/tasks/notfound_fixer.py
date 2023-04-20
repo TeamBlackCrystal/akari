@@ -4,7 +4,7 @@ from loguru import logger
 from mipa.ext.commands.bot import Bot
 from mipac.errors import NoSuchFileError
 from urllib.parse import urlparse, parse_qs
-
+from mipac.http import Route
 
 from src.adapters.redis import RedisQueueSystem
 from src.interactor.notfound_fixed.complete.notfound_fixed_complete_input_if import IFNotfound_fixedCompleteInputData
@@ -12,6 +12,7 @@ from src.interactor.notfound_fixed.complete.notfound_fixed_complete_use_case imp
 
 
 def use_fix_notfound_image(bot: Bot):
+    session = aiohttp.ClientSession()
     async def fix_notfound_image(user_id: str):
         user = await bot.client.user.action.get(user_id=user_id)
         parsed_url = urlparse(user.avatar_url)
@@ -22,17 +23,20 @@ def use_fix_notfound_image(bot: Bot):
                 return  # アバターのURLが見つからない (v13より下だとなるかも)
             avatar_url = _avatar_url[0]
             logger.info(f'{user.api.action.get_mention()}の画像が使用可能か確認します')
-            async with aiohttp.ClientSession() as session:
-                async with session.get(avatar_url) as resp:
-                    if resp.status == 404:
-                        try:
-                            logger.warning(f'{user.api.action.get_mention()}の画像リンクが使用できないため修復を開始します')
-                            file = await bot.client.drive.file.action.show_file(url=avatar_url)
-                            await bot.client.drive.file.action.remove_file(file.id)
-                            logger.success(f'{user.api.action.get_mention()}の画像リンクの修復が完了しました')
+            async with session.get(avatar_url) as resp:
+                if resp.status == 404:
+                    try:
+                        logger.warning(f'{user.api.action.get_mention()}の画像リンクが使用できないため修復を開始します')
+                        file = await bot.client.drive.file.action.show_file(url=avatar_url)
+                        await bot.client.drive.file.action.remove_file(file.id)
 
-                        except NoSuchFileError:
-                            logger.error('ファイルが見つかりませんでした ' + avatar_url)
+                    except NoSuchFileError:
+                        logger.warning('ファイルが見つかりませんでした。修復を開始します。' + avatar_url)
+                    await bot.core.http.request(Route('POST', '/api/federation/update-remote-user'), json={'userId': user_id}, auth=True)
+                    logger.success(f'{user.api.action.get_mention()}の画像リンクの修復が完了しました')
+                elif resp.status == 200:
+                    logger.success(f'{user.api.action.get_mention()} のファイルに問題は見つかりませんでした')
+                            
     return fix_notfound_image
 
 @inject
