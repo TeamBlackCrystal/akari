@@ -40,7 +40,7 @@ class NotFoundFixerCog(commands.Cog):
         user_id = note.author.id
         user = await self.notfound_fixed_find_by_user_id_interactor.handle({'user_id': user_id})
         if user is None:
-            await self.queue.add_queue(user_id=user_id)
+            await self.queue.add(user_id=user_id)
 
         
         
