@@ -3,10 +3,11 @@ from injector import NoInject, inject
 from mipa.ext import commands
 from mipa.ext.commands import Context
 from mipac.models.note import Note
+from packages.shared.adapters.json_adapter import QueueStorageJSONAdapter
 from packages.shared.adapters.redis import RedisQueueSystem
 from packages.shared.interactor.notfound_fixed.find_by_user_id.notfound_fixed_find_by_user_id_use_case import IFNotfoundFixedFindByUserIdUseCase
 
-from packages.shared.queue import QueueSystem
+from packages.shared.queue import IFQueueStorageAdapter, QueueSystem
 from packages.shared.tasks.notfound_fixer import use_complete_fix_notfound_image, use_fix_notfound_image
 
 from packages.shared.injector.di import injector
@@ -15,10 +16,10 @@ current_notfound_fixer_status: Literal['running', 'stop'] = 'stop'
 
 class NotFoundFixerCog(commands.Cog):
     @inject
-    def __init__(self, bot: NoInject[commands.Bot], notfound_fixed_find_by_user_id_interactor: IFNotfoundFixedFindByUserIdUseCase) -> None:
+    def __init__(self, bot: NoInject[commands.Bot], notfound_fixed_find_by_user_id_interactor: IFNotfoundFixedFindByUserIdUseCase, queue_storage_adapter: IFQueueStorageAdapter) -> None:
         self.bot: commands.Bot = bot
         self.notfound_fixed_find_by_user_id_interactor = notfound_fixed_find_by_user_id_interactor
-        self.queue = QueueSystem('notfound_fixer', use_fix_notfound_image(bot), success_func=injector.call_with_injection(use_complete_fix_notfound_image), queue_storage_adapter=RedisQueueSystem())
+        self.queue = QueueSystem('notfound_fixer', use_fix_notfound_image(bot), success_func=injector.call_with_injection(use_complete_fix_notfound_image), queue_storage_adapter=queue_storage_adapter)
         self.queue.run()
 
     @commands.mention_command(regex='notfoundfixer (on|off)')

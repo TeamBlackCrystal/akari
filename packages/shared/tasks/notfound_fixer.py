@@ -6,9 +6,9 @@ from mipac.errors import NoSuchFileError
 from urllib.parse import urlparse, parse_qs
 from mipac.http import Route
 
-from packages.shared.adapters.redis import RedisQueueSystem
 from packages.shared.interactor.notfound_fixed.complete.notfound_fixed_complete_input_if import IFNotfound_fixedCompleteInputData
 from packages.shared.interactor.notfound_fixed.complete.notfound_fixed_complete_use_case import IFNotfoundFixedCompleteUseCase
+from packages.shared.queue import IFQueueStorageAdapter
 
 
 def use_fix_notfound_image(bot: Bot):
@@ -36,12 +36,14 @@ def use_fix_notfound_image(bot: Bot):
                     logger.success(f'{user.api.action.get_mention()}の画像リンクの修復が完了しました')
                 elif resp.status == 200:
                     logger.success(f'{user.api.action.get_mention()} のファイルに問題は見つかりませんでした')
+        return
                             
     return fix_notfound_image
 
 @inject
-def use_complete_fix_notfound_image(notfound_fixed_complete_interactor: IFNotfoundFixedCompleteUseCase, queue_system :RedisQueueSystem):
-    async def complete_fix_notfound_image(key:str, user_id: str):
+def use_complete_fix_notfound_image(notfound_fixed_complete_interactor: IFNotfoundFixedCompleteUseCase, queue_system :IFQueueStorageAdapter):
+    async def complete_fix_notfound_image(name:str, key:str, user_id: str):
         await notfound_fixed_complete_interactor.handle({'user_id': user_id})
-        await queue_system.complete_job(key)
+        await queue_system.complete_job(name, key)
+        return
     return complete_fix_notfound_image

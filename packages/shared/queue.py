@@ -3,7 +3,9 @@ import asyncio
 import uuid
 from typing import Any, Callable, Generic, Literal, TypeVar, TypedDict
 
-QueueStatus = Literal['waiting', 'running', 'completed']
+from loguru import logger
+
+QueueStatus = Literal['waiting', 'running', 'completed', 'failed']
 JobPriority = Literal[0, 1, 2, 3, 4,5,6,7,8,9]
 JOB_PRIORITIES: list[int] = [0, 1, 2, 3, 4,5,6,7,8,9]
 
@@ -28,7 +30,7 @@ class IFQueueStorageAdapter(ABC):
         ...
 
     @abstractmethod
-    async def complete_job(self, name: str):
+    async def complete_job(self, name: str, key: str):
         ...
         
     @abstractmethod
@@ -91,7 +93,6 @@ class QueueSystem:
         self.next_stop = False
         self.queue_storage_adapter: IFQueueStorageAdapter = queue_storage_adapter
         self.loop = asyncio.get_event_loop()
-
     def run(self) -> asyncio.Task[None]:
         if self.func is None or self.success_func is None:
             raise Exception('func 又は success_funcが定義されていません')
@@ -119,28 +120,38 @@ class QueueSystem:
             status=status,
         )
 
+
+    async def count_running_process(self):
+        return await self.queue_storage_adapter.count_jobs(name=self.name, status='running')
+
     async def scheduler(self):
         while True:
             if self.next_stop:
                 return
-            if self.current_run_process_number < self.max_process:
+
+            running_process_number = await self.count_running_process()
+            if running_process_number <= self.max_process or self.is_startup:
+                allow_add_job_number =  self.max_process - running_process_number
                 if self.is_startup:
                     jobs = await self.get_queues('running')
-                    self.is_startup = False
+                    if len(jobs) == 0:
+                        jobs = await self.get_queues('waiting')
+                        self.is_startup = False
                 else:
                     jobs = await self.get_queues('waiting')
+                count = 1
                 for job in jobs:
                     if (
-                        self.current_run_process_number < self.max_process
+                        count <= allow_add_job_number or self.is_startup
                     ):  # 現在実行中のプロセスが最大プロセス以下か確認
-                        # 処理開始
-                        self.current_run_process_number = (
-                            self.current_run_process_number + 1
-                        )
-
+                        if self.is_startup and running_process_number == 0:
+                            self.is_startup = False
+                        print(f'{count}回目')
                         self.loop.create_task(
-                            self.task(job['key'], *job['args'], **job['kwargs'])
+                            self.task(job['key'], *job['args'], **job['kwargs']), name=f'queue: {job["key"]}'
                         )
+                        count = count + 1
+                    # continue
 
             await asyncio.sleep(self.cooldown)
 
@@ -148,10 +159,13 @@ class QueueSystem:
         if self.func is None or self.success_func is None:
             raise Exception('func 又は success_funcが定義されていません')
         running_key = await self.queue_storage_adapter.update_status(key, self.name, 'running')
-        await self.func(*args, **kwargs)
-        new_key = await self.queue_storage_adapter.update_status(running_key, self.name, 'completed')
-
-        await self.success_func(new_key, *args, **kwargs)
-        # 処理終了後
-        await self.queue_storage_adapter.complete_job(new_key)
+        try:
+            await self.func(*args, **kwargs)
+            new_key = await self.queue_storage_adapter.update_status(running_key, self.name, 'completed')
+            await self.success_func(self.name, new_key, *args, **kwargs)
+            # 処理終了後
+            await self.queue_storage_adapter.complete_job(self.name, new_key)
+        except Exception as e:
+            new_key = await self.queue_storage_adapter.update_status(running_key, self.name, 'failed')
         self.current_run_process_number = self.current_run_process_number - 1
+        return
