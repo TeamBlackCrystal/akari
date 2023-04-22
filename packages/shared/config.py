@@ -5,9 +5,10 @@ AkariのConfigモデル
 
 import configparser
 import json
+from typing import Literal
 
 
-from packages.shared.types.config import Config, FeaturesSection, JobQueueSection
+from packages.shared.types.config import Config, FeaturesSection, JobQueueSection, RedisSection
 
 
 class AkariFeaturesConfig:
@@ -16,7 +17,14 @@ class AkariFeaturesConfig:
 
 class AkariJobQueueConfig:
     def __init__(self, job_queue_config: JobQueueSection) -> None:
-        self.redis_url: str = job_queue_config['redis_url']
+        self.type: Literal['json', 'redis'] = job_queue_config['type']
+
+class AkariRedisConfig:
+    def __init__(self, redis_config: RedisSection) -> None:
+        self.host= redis_config['host']
+        self.port= redis_config['port']
+        self.db = redis_config['db']
+        self.password = redis_config['password'] if redis_config['password'] == '\"\"'  else None
 
 
 
@@ -43,6 +51,7 @@ class AkariConfig:
         self.owner_ids: list[str] = json.loads(config['BOT']['owner_ids'])
         self.features: AkariFeaturesConfig = AkariFeaturesConfig(config['FEATURES'])
         self.job_queue: AkariJobQueueConfig = AkariJobQueueConfig(config['JOB_QUEUE'])
+        self.redis: AkariRedisConfig = AkariRedisConfig(config['REDIS'])
 
 
 config_parser = configparser.ConfigParser()

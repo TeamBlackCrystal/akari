@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 
 class BotSection(TypedDict):
@@ -11,10 +11,17 @@ class FeaturesSection(TypedDict):
     notfound_fixer: str
 
 class JobQueueSection(TypedDict):
-    redis_url: str
+    type: Literal['json', 'redis']
+
+class RedisSection(TypedDict):
+    host: str
+    port: int
+    db: str
+    password: str
 
 
 class Config(TypedDict):
     BOT: BotSection
     FEATURES: FeaturesSection
     JOB_QUEUE: JobQueueSection
+    REDIS: RedisSection

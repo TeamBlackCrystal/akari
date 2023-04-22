@@ -1,3 +1,9 @@
 import redis.asyncio as redis
+from mipac.utils.format import remove_dict_empty
 
-redis_connection = redis.Redis(host='192.168.10.51')  # TODO: redisをオプションにする
+from packages.shared.config import config
+
+
+def get_redis():
+    arg = remove_dict_empty({'db': config.redis.db, 'password': config.redis.password})
+    return redis.Redis(host=config.redis.host, port=config.redis.port, **arg)
