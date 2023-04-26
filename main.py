@@ -31,18 +31,26 @@ async def follow_user(user: LiteUser, client: ClientManager):
 STRIKE = {}
 
 
+
 class Akari(Bot):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+    async def connect_channel(self):
+        await self.router.connect_channel(['main', 'global'])
 
     async def setup_hook(self) -> None:
         for cog in INITIAL_EXTENSIONS:
             if cog['is_enable']:
                 await self.load_extension(cog['path'])
 
+    async def on_reconnect(self, ws):
+        logger.warning('サーバーとの接続をロストしました。再接続します。')
+        await self.connect_channel()
+
     async def on_ready(self, ws):
         logger.success(f'Connected {get_name(self.user)}')
-        await self.router.connect_channel(['main', 'global'])
+        await self.connect_channel()
 
     async def on_note(self, note: Note):
         logger.info(f'{get_name(note.author)}: {note.content}')
