@@ -1,4 +1,6 @@
+from datetime import datetime
 import random
+import time
 from typing import Literal
 
 from injector import NoInject, inject
@@ -82,6 +84,11 @@ class ReminderCog(commands.Cog):
         self._reminder_get_by_note_interactor = reminder_get_by_note_interactor
 
         self.check_reminder.start()
+        self.check_status.start()
+
+    @tasks.loop(seconds=60)
+    async def check_status(self):
+        print('動いてるよ', datetime.now())
 
     @tasks.loop(seconds=21600)  # 12 * 60 * 60 (43200)
     async def check_reminder(self):
@@ -117,7 +124,7 @@ class ReminderCog(commands.Cog):
         )
         await enhanced_reply(ctx.message, f'{created_reminder.title}ですね。わかりました！')
 
-    @commands.mention_command(regex=r'(reminds|todos|tasks|タスク一覧|)')
+    @commands.mention_command(regex=r'(reminds|todos|tasks|タスク一覧)')
     async def todos(self, ctx: Context, arg):
 
         reminders = await self._reminder_get_lists_interactor.handle(
