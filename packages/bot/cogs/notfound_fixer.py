@@ -22,6 +22,11 @@ class NotFoundFixerCog(commands.Cog):
         self.queue = QueueSystem('notfound_fixer', use_fix_notfound_image(bot), success_func=injector.call_with_injection(use_complete_fix_notfound_image), queue_storage_adapter=queue_storage_adapter)
         self.queue.run()
 
+    @commands.mention_command(regex='img fix (.*)')
+    async def fix_by_id(self, ctx: Context, user_id: str):
+        await self.queue.add(user_id=user_id)
+        await ctx.message.api.action.reply('画像の修復を予約しました', visible_user_ids=[ctx.author.id])
+
     @commands.mention_command(regex='notfoundfixer (on|off)')
     async def trigger_notfound_fixer(self, ctx: Context, on_or_off: str):
         use_notfound_fixer = on_or_off == 'on'
