@@ -24,9 +24,9 @@ class NotFoundFixerCog(commands.Cog):
 
     @commands.mention_command(text='img fix queue')
     async def get_fix_img_queues(self, ctx: Context):
-        waiting_job = self.queue.count_jobs('waiting')
-        running_job = self.queue.count_jobs('running')
-        completed_job = self.queue.count_jobs('completed')
+        waiting_job = await self.queue.count_jobs('waiting')
+        running_job = await self.queue.count_jobs('running')
+        completed_job = await self.queue.count_jobs('completed')
         
         await ctx.message.api.action.reply(f'**IMG FIX INFO**\n待機中: {waiting_job}\n完了済み: {completed_job}\n進行中: {running_job}', visible_user_ids=[ctx.author.id])
 
