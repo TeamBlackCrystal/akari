@@ -1,13 +1,6 @@
 import configparser
 import json
 import os
-import pathlib
-import sys
-parent_dir = str(pathlib.Path(__file__).parent.parent.resolve())
-
-sys.path.append(parent_dir)
-
-from packages.shared.types.config import Config
 
 config = configparser.ConfigParser()
 config.read('./example-config.ini', 'utf-8')
@@ -18,7 +11,7 @@ BOT_OWNERS = os.environ.get('BOT_OWNERS')
 
 if BOT_TOKEN is None or BOT_URL is None or BOT_OWNERS is None:
     raise ValueError('BOT_TOKEN, BOT_URL, BOT_OWNERSのいずれかが定義されていません')
-raw_config: Config = config.__dict__['_sections']
+raw_config = config.__dict__['_sections']
 raw_config['BOT']['token'] = BOT_TOKEN
 raw_config['BOT']['url'] = BOT_URL
 raw_config['BOT']['owner_ids'] = json.loads(BOT_OWNERS)
