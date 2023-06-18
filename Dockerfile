@@ -3,4 +3,4 @@ WORKDIR /akari
 COPY requirements.txt /akari/
 RUN pip install -r requirements.txt
 COPY . /akari
-CMD python ./tools/config-gen.py && python main.py
+CMD ls && python ./tools/config-gen.py && python main.py
