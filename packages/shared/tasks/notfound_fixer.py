@@ -28,7 +28,7 @@ def use_fix_notfound_image(bot: Bot):
                     try:
                         logger.warning(f'{user.api.action.get_mention()}の画像リンクが使用できないため修復を開始します')
                         file = await bot.client.drive.file.action.show_file(url=avatar_url)
-                        await bot.client.drive.file.action.remove_file(file.id)
+                        await bot.client.drive.file.action.remove(file.id)
 
                     except NoSuchFileError:
                         logger.warning('ファイルが見つかりませんでした。修復を開始します。' + avatar_url)
