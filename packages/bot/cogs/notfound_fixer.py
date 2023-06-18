@@ -24,7 +24,7 @@ class NotFoundFixerCog(commands.Cog):
 
     @commands.mention_command(regex='img fix (.*)')
     async def fix_by_id(self, ctx: Context, user_id: str):
-        await self.queue.add(user_id=user_id)
+        await self.queue.add(user_id=user_id, priority=0)
         await ctx.message.api.action.reply('画像の修復を予約しました', visible_user_ids=[ctx.author.id])
 
     @commands.mention_command(regex='notfoundfixer (on|off)')
