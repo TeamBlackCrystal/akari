@@ -4,9 +4,8 @@ alembic
 aiosqlite
 sqlalchemy[asyncio]
 injector
-git+https://github.com/yupix/MiPA.git@develop
-git+https://github.com/yupix/MiPAC.git@develop
-mipac
+mipa==0.2.3
+mipac==0.4.99
 redis
 fastapi
 uvicorn
