@@ -22,6 +22,14 @@ class NotFoundFixerCog(commands.Cog):
         self.queue = QueueSystem('notfound_fixer', use_fix_notfound_image(bot), success_func=injector.call_with_injection(use_complete_fix_notfound_image), queue_storage_adapter=queue_storage_adapter)
         self.queue.run()
 
+    @commands.mention_command(text='img fix queue')
+    async def get_fix_img_queues(self, ctx: Context):
+        waiting_job = self.queue.count_jobs('waiting')
+        running_job = self.queue.count_jobs('running')
+        completed_job = self.queue.count_jobs('completed')
+        
+        await ctx.message.api.action.reply(f'**IMG FIX INFO**\n待機中: {waiting_job}\n完了済み: {completed_job}\n進行中: {running_job}', visible_user_ids=[ctx.author.id])
+
     @commands.mention_command(regex='img fix (.*)')
     async def fix_by_id(self, ctx: Context, user_id: str):
         await self.queue.add(user_id=user_id, priority=0)
