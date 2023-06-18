@@ -33,9 +33,11 @@ def use_fix_notfound_image(bot: Bot):
                     except NoSuchFileError:
                         logger.warning('ファイルが見つかりませんでした。修復を開始します。' + avatar_url)
                     await bot.core.http.request(Route('POST', '/api/federation/update-remote-user'), json={'userId': user_id}, auth=True)
-                    logger.success(f'{user.api.action.get_mention()}の画像リンクの修復が完了しました')
+                    logger.success(f'{user.api.action.get_mention()}の画像リンクの修復が完了しました {avatar_url}')
                 elif resp.status == 200:
-                    logger.success(f'{user.api.action.get_mention()} のファイルに問題は見つかりませんでした')
+                    logger.success(f'{user.api.action.get_mention()} のファイルに問題は見つかりませんでした {avatar_url}')
+                else:
+                    logger.error(f'未知の例外が発生しました: {avatar_url}, {resp.status}')
         return
                             
     return fix_notfound_image
