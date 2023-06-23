@@ -7,6 +7,8 @@ import configparser
 import json
 from typing import Literal
 
+from mipac.utils.format import remove_dict_empty
+
 
 from packages.shared.types.config import Config, FeaturesSection, JobQueueSection, RedisSection
 
@@ -26,6 +28,9 @@ class AkariRedisConfig:
         self.db = redis_config['db']
         self.password = redis_config['password'] if redis_config['password'] == '\"\"'  else None
 
+    @property
+    def to_dict(self):
+        return remove_dict_empty({'host': self.host, 'port': self.port, 'db': self.db, 'password': self.password})
 
 
 class AkariConfig:

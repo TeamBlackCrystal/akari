@@ -18,14 +18,10 @@ class IHitNGWord(TypedDict):
     total: int
 
 
-class NGWordDetecter:
-    def __init__(self, text: str) -> None:
-        self.__text = text
-
-    @alru_cache(maxsize=100)
-    async def detect(self) -> IHitNGWord:
-        hits = []
-        for word in NG_WORDS:
-            if word in self.__text:
-                hits.append(word)
-        return {'hits': hits, 'total': len(hits)}
+@alru_cache(maxsize=100)
+async def detect_ng_word(text: str) -> IHitNGWord:
+    hits = []
+    for word in NG_WORDS:
+        if word in text:
+            hits.append(word)
+    return {'hits': hits, 'total': len(hits)}

@@ -11,3 +11,6 @@ fastapi
 uvicorn
 jinja2
 fastapi-injector
+textual
+mecab-python3
+catline

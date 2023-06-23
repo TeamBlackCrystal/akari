@@ -1,36 +1,19 @@
 from datetime import datetime
 import random
-import time
 from typing import Literal
 
 from injector import NoInject, inject
-from packages.shared.injector.di import injector
 from mipa import Context
 from mipa.ext import commands
 from mipa.ext.commands import Bot
 from mipa.ext import tasks
 from mipac.models.note import Note
-from packages.shared.interactor.reminder.delete.reminder_delete_use_case import (
-    IFReminderDeleteUseCase,
-)
-from packages.shared.interactor.reminder.get_by_note_id.reminder_get_by_note_id_use_case import (
-    IFReminderGetbynoteidUseCase,
-)
 from packages.shared.utils.common import get_name
-from packages.shared.interactor.reminder.get_lists.reminder_get_lists_use_case import (
-    IFReminderGetListsUseCase,
-)
-from packages.shared.interactor.reminder.get_not_done_lists.reminder_get_not_done_lists_use_case import (
-    IFReminderGetnotdonelistsUseCase,
-)
-
-from packages.shared.interactor.reminder.reminder_create_use_case import IFReminderCreateUseCase
-from packages.shared.interactor.user.create.user_create_use_case import IFUserCreateUseCase
-from packages.shared.interactor.user.get_by_user_id.user_get_by_user_id_use_case import (
-    IFUserGetbyuseridUseCase,
-)
 
 from packages.shared.config import config
+from src.reminder.reminder_interface import IFReminderService
+from src.user.user_interface import IFUserService
+from src.di_container import injector
 
 
 async def enhanced_reply(note: Note, msg):
@@ -64,24 +47,12 @@ class ReminderCog(commands.Cog):
     def __init__(
         self,
         bot: NoInject[Bot],
-        user_create_interactor: IFUserCreateUseCase,
-        reminder_interactor: IFReminderCreateUseCase,
-        user_get_by_user_id_interactor: IFUserGetbyuseridUseCase,
-        reminder_get_lists_interactor: IFReminderGetListsUseCase,
-        reminder_get_not_done_lists_interactor: IFReminderGetnotdonelistsUseCase,
-        reminder_delete_interactor: IFReminderDeleteUseCase,
-        reminder_get_by_note_interactor: IFReminderGetbynoteidUseCase,
+        user_service: IFUserService,
+        reminder_service: IFReminderService,
     ) -> None:
         self.bot = bot
-        self._user_create_interactor = user_create_interactor
-        self._reminder_interactor = reminder_interactor
-        self._user_get_by_user_id_interactor = user_get_by_user_id_interactor
-        self._reminder_get_lists_interactor = reminder_get_lists_interactor
-        self._reminder_get_not_done_lists_interactor = (
-            reminder_get_not_done_lists_interactor
-        )
-        self._reminder_delete_interactor = reminder_delete_interactor
-        self._reminder_get_by_note_interactor = reminder_get_by_note_interactor
+        self.user_service = user_service
+        self.reminder_service = reminder_service
 
         self.check_reminder.start()
         self.check_status.start()
@@ -92,7 +63,7 @@ class ReminderCog(commands.Cog):
 
     @tasks.loop(seconds=21600)  # 12 * 60 * 60 (43200)
     async def check_reminder(self):
-        not_done_reminders = await self._reminder_get_not_done_lists_interactor.handle()
+        not_done_reminders = await self.reminder_service.get_not_done_lists()
         for reminder in not_done_reminders:
             use_send = True if random.randrange(0, 4) > 2 else False
             if use_send:
@@ -112,24 +83,15 @@ class ReminderCog(commands.Cog):
             await ctx.message.api.action.reply('タイトルが指定されていないようです！')
             return
 
-        created_user = await self._user_create_interactor.handle(
-            {'misskey_id': ctx.author.id}
-        )
-        created_reminder = await self._reminder_interactor.handle(
-            input_data={
-                'note_id': ctx.message.id,
-                'title': title,
-                'user_id': created_user.misskey_id,
-            }
-        )
+        created_user = await self.user_service.create(misskey_id=ctx.author.id)
+        created_reminder = await self.reminder_service.create(title=title, note_id=ctx.message.id, user_id=created_user.misskey_id)
+
         await enhanced_reply(ctx.message, f'{created_reminder.title}ですね。わかりました！')
 
     @commands.mention_command(regex=r'(reminds|todos|tasks|タスク一覧)')
     async def todos(self, ctx: Context, arg):
+        reminders = await self.reminder_service.get_lists(user_id=ctx.author.id)
 
-        reminders = await self._reminder_get_lists_interactor.handle(
-            input_data={'user_id': ctx.author.id}
-        )
 
         if len(reminders) > 0:
             tasks_text = '\n'.join(
@@ -152,15 +114,15 @@ class ReminderCog(commands.Cog):
     @commands.mention_command(regex=r'(やめる|やめた|キャンセル|cancel)')
     async def cancel(self, ctx: Context, *arg):
         note = ctx.message
-        if note.reply:
-            reply_id = note.reply_id
-            reminder = await self._reminder_get_by_note_interactor.handle(
-                input_data={'note_id': reply_id}
+        reply_id = note.reply_id
+        if reply_id:
+            reminder = await self.reminder_service.get_by_note_id(
+                note_id=reply_id
             )
             if reminder is None or ctx.message.author.id != reminder.user.misskey_id:
                 await enhanced_reply(ctx.message, '見ていますからね！')
                 return
-            await self._reminder_delete_interactor.handle({'note_id': reply_id})  # 削除
+            await self.reminder_service.delete(note_id=reply_id)  # 削除
             await enhanced_reply(ctx.message, 'わかったよ！また頑張ろうねッ！')
         else:
             await enhanced_reply(ctx.message, 'そっか...')

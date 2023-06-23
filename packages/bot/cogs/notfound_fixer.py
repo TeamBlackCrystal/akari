@@ -3,23 +3,21 @@ from injector import NoInject, inject
 from mipa.ext import commands
 from mipa.ext.commands import Context
 from mipac.models.note import Note
-from packages.shared.adapters.json_adapter import QueueStorageJSONAdapter
-from packages.shared.adapters.redis import RedisQueueSystem
-from packages.shared.interactor.notfound_fixed.find_by_user_id.notfound_fixed_find_by_user_id_use_case import IFNotfoundFixedFindByUserIdUseCase
+from catline.adapters import IFQueueStorageAdapter
+from catline.queue import Queue
 
-from packages.shared.queue import IFQueueStorageAdapter, QueueSystem
 from packages.shared.tasks.notfound_fixer import use_complete_fix_notfound_image, use_fix_notfound_image
-
-from packages.shared.injector.di import injector
+from src.di_container import injector
+from src.avatar_fix.avatar_fix_interface import IFAvatarFixService
 
 current_notfound_fixer_status: Literal['running', 'stop'] = 'stop'
 
 class NotFoundFixerCog(commands.Cog):
     @inject
-    def __init__(self, bot: NoInject[commands.Bot], notfound_fixed_find_by_user_id_interactor: IFNotfoundFixedFindByUserIdUseCase, queue_storage_adapter: IFQueueStorageAdapter) -> None:
+    def __init__(self, bot: NoInject[commands.Bot], avatar_fix_service: IFAvatarFixService, queue_storage_adapter: IFQueueStorageAdapter) -> None:
         self.bot: commands.Bot = bot
-        self.notfound_fixed_find_by_user_id_interactor = notfound_fixed_find_by_user_id_interactor
-        self.queue = QueueSystem('notfound_fixer', use_fix_notfound_image(bot), success_func=injector.call_with_injection(use_complete_fix_notfound_image), queue_storage_adapter=queue_storage_adapter)
+        self.avatar_fix_service = avatar_fix_service
+        self.queue = Queue('notfound_fixer', queue_storage_adapter, use_fix_notfound_image(bot), success_func=injector.call_with_injection(use_complete_fix_notfound_image),)
         self.queue.run()
 
     @commands.mention_command(text='fix img queue')
@@ -52,7 +50,7 @@ class NotFoundFixerCog(commands.Cog):
         # if current_notfound_fixer_status != 'running':
             # return
         user_id = note.author.id
-        user = await self.notfound_fixed_find_by_user_id_interactor.handle({'user_id': user_id})
+        user = await self.avatar_fix_service.find_by_user_id(user_id=user_id)
         if user is None:
             await self.queue.add(user_id=user_id)
 
