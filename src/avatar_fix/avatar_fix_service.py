@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from sqlalchemy import select
 
-from packages.shared.db import Session
+from src.db import Session
 from src.entities.notfound_fixed import NotFoundFixed
 from src.avatar_fix.avatar_fix_interface import IFAvatarFixService
 

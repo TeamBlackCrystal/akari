@@ -10,7 +10,7 @@ from catline.queue import QueueKey, IFQueueStorageAdapter
 from src.avatar_fix.avatar_fix_interface import IFAvatarFixService
 
 
-def use_fix_notfound_image(bot: Bot):
+def use_avatar_fix(bot: Bot):
     session = aiohttp.ClientSession()
     async def fix_notfound_image(user_id: str):
         user = await bot.client.user.action.get(user_id=user_id)
@@ -42,9 +42,9 @@ def use_fix_notfound_image(bot: Bot):
     return fix_notfound_image
 
 @inject
-def use_complete_fix_notfound_image(avatar_fix_service: IFAvatarFixService, queue_system :IFQueueStorageAdapter):
-    async def complete_fix_notfound_image(name:str, key:QueueKey, user_id: str):
+def use_complete_avatar_fix(avatar_fix_service: IFAvatarFixService, queue_system :IFQueueStorageAdapter):
+    async def complete_avatar_fix(name:str, key:QueueKey, user_id: str):
         await avatar_fix_service.complete(user_id=user_id)
         await queue_system.complete_job(name, key)
         return
-    return complete_fix_notfound_image
+    return complete_avatar_fix

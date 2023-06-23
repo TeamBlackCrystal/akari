@@ -5,7 +5,7 @@ import uuid
 from sqlalchemy import Boolean, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
-from packages.shared.db import Base
+from src.db import Base
 
 
 class User(Base):

@@ -10,14 +10,14 @@ from mipac import (
 )
 from catline.adapters import QueueStorageJSONAdapter, QueueStorageRedisAdapter
 from catline.queue import IFQueueStorageAdapter
-from packages.shared.config import config
-from packages.shared.utils.common import get_name
+from src.config import config
+from src.utils.common import get_name
 from src.di_container import injector
 
 INITIAL_EXTENSIONS = [
-    {'path': 'packages.bot.cogs.follow', 'is_enable': True},
-    {'path': 'packages.bot.cogs.reminder', 'is_enable': True},
-    {'path': 'packages.bot.cogs.notfound_fixer', 'is_enable': config.features.notfound_fixer},
+    {'path': 'src.cogs.follow', 'is_enable': True},
+    {'path': 'src.cogs.reminder', 'is_enable': True},
+    {'path': 'src.cogs.avatar_fix', 'is_enable': config.features.notfound_fixer},
 ]
 
 

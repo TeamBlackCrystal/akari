@@ -4,7 +4,7 @@ from mipa.ext import commands
 from mipa.ext.commands import Bot
 from mipac.models import UserDetailed
 
-from packages.shared.utils.common import get_name
+from src.utils.common import get_name
 
 
 class FollowManagerCog(commands.Cog):

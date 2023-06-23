@@ -1,6 +1,6 @@
 from mipa.ext import commands
 
-from packages.shared.injector.di import injector
+from src.injector.di import injector
 
 class WeatherCog(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:

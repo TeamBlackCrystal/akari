@@ -8,9 +8,9 @@ from mipa.ext import commands
 from mipa.ext.commands import Bot
 from mipa.ext import tasks
 from mipac.models.note import Note
-from packages.shared.utils.common import get_name
+from src.utils.common import get_name
 
-from packages.shared.config import config
+from src.config import config
 from src.reminder.reminder_interface import IFReminderService
 from src.user.user_interface import IFUserService
 from src.di_container import injector

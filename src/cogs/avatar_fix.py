@@ -6,7 +6,7 @@ from mipac.models.note import Note
 from catline.adapters import IFQueueStorageAdapter
 from catline.queue import Queue
 
-from packages.shared.tasks.notfound_fixer import use_complete_fix_notfound_image, use_fix_notfound_image
+from src.tasks.avatar_fix import use_complete_avatar_fix, use_avatar_fix
 from src.di_container import injector
 from src.avatar_fix.avatar_fix_interface import IFAvatarFixService
 
@@ -17,7 +17,7 @@ class NotFoundFixerCog(commands.Cog):
     def __init__(self, bot: NoInject[commands.Bot], avatar_fix_service: IFAvatarFixService, queue_storage_adapter: IFQueueStorageAdapter) -> None:
         self.bot: commands.Bot = bot
         self.avatar_fix_service = avatar_fix_service
-        self.queue = Queue('notfound_fixer', queue_storage_adapter, use_fix_notfound_image(bot), success_func=injector.call_with_injection(use_complete_fix_notfound_image),)
+        self.queue = Queue('notfound_fixer', queue_storage_adapter, use_avatar_fix(bot), success_func=injector.call_with_injection(use_complete_avatar_fix),)
         self.queue.run()
 
     @commands.mention_command(text='fix img queue')

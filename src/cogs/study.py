@@ -3,9 +3,9 @@ import markovify
 from mipa.ext import commands
 from mipac.models.note import Note
 
-from packages.shared.mecab import mecab
-from packages.shared.utils.common import check_include_url
-from packages.shared.utils.ngword import IHitNGWord, detect_ng_word
+from src.mecab import mecab
+from src.utils.common import check_include_url
+from src.utils.ngword import IHitNGWord, detect_ng_word
 
 NLU_DATA_FILE = 'nlu_data.json'
 

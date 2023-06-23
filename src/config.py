@@ -10,7 +10,7 @@ from typing import Literal
 from mipac.utils.format import remove_dict_empty
 
 
-from packages.shared.types.config import Config, FeaturesSection, JobQueueSection, RedisSection
+from src.types.config import Config, FeaturesSection, JobQueueSection, RedisSection
 
 
 class AkariFeaturesConfig:

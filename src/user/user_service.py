@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from packages.shared.db import Session
+from src.db import Session
 from src.entities.user import User
 from src.user.user_interface import IFUserService
 
