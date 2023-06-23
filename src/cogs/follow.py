@@ -20,10 +20,10 @@ class FollowManagerCog(commands.Cog):
         await user.api.follow.action.add()
         await ctx.message.api.action.reply(f'よろしくね、{get_name(ctx.author)}さん')
 
-    @commands.Cog.listener()  # type: ignore
+    @commands.Cog.listener()
     async def on_follow(self, follower: UserDetailed):
-        logger.info(f'{follower.name}さんにフォローされました')
+        logger.info(f'{get_name(follower)}さんにフォローされました')
 
 
 async def setup(bot: Bot):
-    await bot.add_cog(FollowManagerCog(bot))  # type: ignore
+    await bot.add_cog(FollowManagerCog(bot))
